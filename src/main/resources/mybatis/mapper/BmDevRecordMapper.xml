@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weds.demo.export.mapper.BmDevRecordMapper">
+
+  <select id="testGetBigData" resultType="com.weds.demo.export.entity.DemoExportEntity">
+    select * from bm_dev_record order by id
+    offset (#{pageIndex}-1) * #{pageSize} limit #{pageSize}
+  </select>
+
+  <select id="testGetBigDataCount" resultType="java.lang.Integer">
+    select count(1) from
+    bm_dev_record
+  </select>
+
+</mapper>

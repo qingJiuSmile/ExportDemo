@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="message" style="width:1000px; height: 600px;border: 1px #ccc solid; overflow-y: scroll;float: left;">
+    <input type="button" value="导出文件" @click="download">
+    <hr/>
+    <button  @click = "websocketclose">关闭WebSocket连接</button>
+    <hr/>
+    <el-progress type="circle" :percentage="placePer"  :status="status" :color="customColor"></el-progress><br>
+    <span v-html="returnMsg" style="margin-top: 20px"></span>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+<script src="//unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#message',
+        data:{
+            placePer: 0,
+            websock:null,
+            inputMsg:"",
+            returnMsg:"",
+            flag:false,
+            status:null,
+            customColor:"#409eff"
+        },
+        created() {
+        },
+        methods: {
+            download(){
+                if(this.flag){
+                    var userId = "1001";
+                    var timestamp = new Date().getTime();
+                    var param_sid = userId + timestamp;
+                    this.initWebSocket(param_sid);
+                    location.href = "../../excel/export/InstituteData/"+ param_sid;
+                }else {
+                    alert("您的浏览器不支持webSocket")
+                }
+            },
+            initWebSocket(sid){ //初始化weosocket
+                this.status = null;
+                this.placePer = 0;
+                var addr = location.href.split("://")[1].split("/")[0];
+                this.websock = new WebSocket("ws://"+ addr +"/websocket/"+ sid);
+                this.websock.onmessage = this.websocketonmessage;
+                this.websock.onopen = this.websocketonopen;
+                this.websock.onerror = this.websocketonerror;
+                this.websock.onclose = this.websocketclose;
+            },
+            websocketonopen(){ //连接建立之后执行send方法发送数据
+                let actions;
+                if(this.inputMsg !=""){
+                    actions = this.inputMsg;
+                }else {
+                    actions = "连接成功";
+                }
+                this.websocketsend(actions);
+            },
+            websocketonerror(){//连接建立失败重连
+               console.log("webSocket连接失败");
+            },
+            websocketonmessage(event){ //数据接收
+                console.log("data:"+event.data);
+                this.returnMsg = "<b>"+ event.data+"</b>"+"</br>";
+                if(event.data.split("/").length == 2){
+                    var num = parseInt(event.data.split("/")[0]);
+                    var num1 = parseInt(event.data.split("/")[1]);
+                    console.log(num);
+                    console.log(num1);
+                    this.placePer = ((num / num1) * 100).toFixed(2);
+                    if(num == num1){
+                        this.status = "success";
+                        this.websocketclose();
+                    }
+                }
+            },
+            websocketsend(data){//数据发送
+                this.websock.send(data);
+                console.log("发送数据"+data);
+            },
+            websocketclose(){  //关闭
+                this.websock.close();
+                this.returnMsg = "关闭连接";
+            },
+        },
+        mounted(){
+            var _this = this;
+            //浏览器关闭时关闭WebSocket连接
+                window.onbeforeunload = function () {
+                _this.websocketsend("closeBrowser");
+            }
+            //浏览器对websocket判断
+            if(typeof(WebSocket) == "undefined") {
+                console.log("您的浏览器不支持WebSocket");
+            }else {
+                this.flag = true;
+                console.log("您的浏览器支持WebSocket");
+            }
+        }
+    })
+</script>
+</body>
+
+</html>

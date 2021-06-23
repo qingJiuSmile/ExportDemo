@@ -1,0 +1,28 @@
+server:
+  port: 8083
+spring:
+  datasource:
+    password: 'weds123'
+    url: jdbc:postgresql://10.0.0.93:50012/postgres
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+    #配置初始化大小/最小/最大
+    initialSize: 1
+    minIdle: 1
+    maxActive: 200
+    #获取连接等待超时时间
+    maxWait: 60000
+    #间隔多久进行一次检测，检测需要关闭的空闲连接
+    timeBetweenEvictionRunsMillis: 60000
+    #一个连接在池中最小生存的时间
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    #打开PSCache，并指定每个连接上PSCache的大小。PSCache对支持游标的数据库性能提升巨大，比如说oracle
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml

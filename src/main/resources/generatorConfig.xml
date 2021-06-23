@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <classPathEntry location="D:/postgresql-42.2.5.jar" />
+
+    <context id="pg" targetRuntime="MyBatis3">
+        <commentGenerator>
+            <property name="suppressDate" value="true" />
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+        <jdbcConnection driverClass="org.postgresql.Driver"
+                        connectionURL="jdbc:postgresql://10.0.0.93:50012/postgres"
+                        userId="postgres"
+                        password="weds123">
+        </jdbcConnection>
+
+        <javaModelGenerator targetPackage="com.weds.demo.export.entity" targetProject="D:/ideaProject/download/src/main/java">
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mybatis.mapper"  targetProject="D:/ideaProject/download/src/main/resources">
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.weds.demo.export.mapper"  targetProject="D:/ideaProject/download/src/main/java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <table tableName="bm_dev_record" domainObjectName="BmDevRecord" enableCountByExample="false"
+               enableDeleteByExample="false" enableUpdateByExample="false"
+               selectByExampleQueryId="false" enableSelectByExample="false">
+        </table>
+
+    </context>
+</generatorConfiguration>
